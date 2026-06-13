@@ -10,8 +10,8 @@ class RankingAlgorithm:
 
     def __init__(self, album_list):
         self.album_list = album_list
-        self.current_ranking = []
-        self.unranked_albums = album_list.copy()
+        self.current_ranking = [album_list[-1]]
+        self.unranked_albums = album_list.copy().pop()
 
     def get_next_comparison(self):
         pass
@@ -30,17 +30,26 @@ class RankingAlgorithm:
 
 
 class BinaryInsertionSort(RankingAlgorithm):
+
     def __init__(self, album_list):
         super().__init__(album_list)
         self.low_index = 0
-        self.high_index = len(album_list) - 1
+        self.high_index = len(self.current_ranking) - 1
         self.middle_index = (self.high_index + self.low_index) // 2
         self.current_album = album_list[0]
+        self.current_album_idx = 0
 
     def get_next_comparison(self):
-        return self.album_list[self.middle_index]
+        return self.current_album, self.album_list[self.middle_index]
     
-    
+    def record_choice(self, winner, loser):
+        if self.current_album == winner:
+            self.low_index = self.middle_index + 1
+            self.middle_index = (self.high_index + self.low_index) // 2
+        elif self.current_album == loser:
+            self.high_index = self.middle_index - 1
+            self.middle_index = (self.high_index + self.low_index) // 2
+        
 
 class RankingSession:
 

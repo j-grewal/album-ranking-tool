@@ -3,6 +3,7 @@ Module to handle reading and writing csv files
 """
 
 import logging
+import random
 
 from csv import DictReader, DictWriter
 from album_ranker.album import Album
@@ -45,6 +46,7 @@ def list_of_dicts_to_albums(listofdicts):
             )
         )
 
+    random.shuffle(list_of_albums) # Why not?
     return list_of_albums
 
 

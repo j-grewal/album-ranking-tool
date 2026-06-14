@@ -61,7 +61,10 @@ def list_of_albums_to_csv(listofalbums: list[Album]):
         writer = DictWriter(csvfile, fieldnames=fields)
 
         for album in listofalbums:
-            row = album.metadata
+            row = {}
+            for key in album.metadata:
+                row[key] = album.metadata[key]
+
             row["title"] = album.title
             row["artist"] = album.artist
             writer.writerow(row)

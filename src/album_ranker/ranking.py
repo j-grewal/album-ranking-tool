@@ -11,8 +11,12 @@ class RankingAlgorithm:
 
     def __init__(self, album_list):
         self.album_list = album_list
-        self.current_ranking = [album_list[-1]]
-        self.unranked_albums = album_list.copy()[:-1]
+        if len(album_list) > 0:
+            self.current_ranking = [album_list[-1]]
+            self.unranked_albums = album_list.copy()[:-1]
+        else:
+            self.current_ranking = []
+            self.unranked_albums = []
 
     def is_complete(self):
         if len(self.unranked_albums) > 0:

@@ -4,7 +4,7 @@ Fixtures for tests
 
 import pytest
 
-from album_ranker.album import Album
+from src.album_ranker.album import Album
 
 @pytest.fixture
 def single_album_array():

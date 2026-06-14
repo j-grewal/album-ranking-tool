@@ -11,4 +11,4 @@ class Album:
     """
     title: str
     artist: str
-    metadata: dict = {}
+    metadata: dict

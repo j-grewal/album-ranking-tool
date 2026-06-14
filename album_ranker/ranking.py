@@ -58,7 +58,7 @@ class BinaryInsertionSort(RankingAlgorithm):
         right = self.current_ranking[index:]
         left.append(self.current_album)
         self.current_ranking = left + right
-        print(f"{self.current_album.title} has been inserted: {self.get_current_ranking_titles()}")
+        logger.info(f"{self.current_album.title} has been inserted: {self.get_current_ranking_titles()}")
         self.unranked_albums.pop(0)
 
     def set_next_album_to_insert(self):

@@ -12,7 +12,7 @@ import ranking
 logger = logging.getLogger(__name__)
 
 def main():
-    filepath = "album_ranker/data/example_numbers.csv"
+    filepath = "album_ranker/data/example_numbers_small.csv"
     list_of_albums = csv_io.list_of_dicts_to_albums(csv_io.csv_to_list_of_dicts(filepath))
 
     if len(list_of_albums) == 0:

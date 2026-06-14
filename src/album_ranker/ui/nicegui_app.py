@@ -7,7 +7,8 @@ from nicegui import ui
 @ui.page("/")
 def homepage():
     ui.label("Hello, welcome to the Album Ranker!")
-    ui.link("Continue", "/rank_session")
+    with ui.link(target="/rank_session"):
+        ui.button("Continue")
 
 @ui.page("/rank_session")
 def rank_session():

@@ -11,8 +11,12 @@ class RankingAlgorithm:
 
     def __init__(self, album_list):
         self.album_list = album_list
-        self.current_ranking = [album_list[-1]]
-        self.unranked_albums = album_list.copy()[:-1]
+        if len(album_list) > 0:
+            self.current_ranking = [album_list[-1]]
+            self.unranked_albums = album_list.copy()[:-1]
+        else:
+            self.current_ranking = []
+            self.unranked_albums = []
 
     def is_complete(self):
         if len(self.unranked_albums) > 0:
@@ -31,7 +35,10 @@ class BinaryInsertionSort(RankingAlgorithm):
         self.low_index = 0
         self.high_index = len(self.current_ranking) - 1
         self.middle_index = (self.high_index + self.low_index) // 2
-        self.current_album = self.unranked_albums[0]
+        if len(self.unranked_albums) > 0:
+            self.current_album = self.unranked_albums[0]
+        else:
+            self.current_album = None
 
     def get_next_comparison(self):
         return self.current_album, self.current_ranking[self.middle_index]
@@ -58,7 +65,7 @@ class BinaryInsertionSort(RankingAlgorithm):
         right = self.current_ranking[index:]
         left.append(self.current_album)
         self.current_ranking = left + right
-        print(f"{self.current_album.title} has been inserted: {self.get_current_ranking_titles()}")
+        logger.info(f"{self.current_album.title} has been inserted: {self.get_current_ranking_titles()}")
         self.unranked_albums.pop(0)
 
     def set_next_album_to_insert(self):
@@ -79,7 +86,7 @@ class BinaryInsertionSort(RankingAlgorithm):
 
 class RankingSession:
 
-    def __init__(self, algorithm=BinaryInsertionSort):
+    def __init__(self, algorithm: RankingAlgorithm):
         self.algorithm = algorithm
         self._skipped_comparisons = []
         self._removed_albums = []

@@ -12,7 +12,7 @@ import ranking
 logger = logging.getLogger(__name__)
 
 def main():
-    filepath = "album_ranker/data/example_numbers.csv"
+    filepath = "src/album_ranker/data/example_small.csv"
     list_of_albums = csv_io.list_of_dicts_to_albums(csv_io.csv_to_list_of_dicts(filepath))
 
     if len(list_of_albums) == 0:
@@ -34,6 +34,7 @@ def main():
         elif choice == album_b:
             session.record_choice(album_b, album_a)
 
+    print("Ranking complete :)")
     csv_io.list_of_albums_to_csv(session.get_ranking())
 
 if __name__ == "__main__":

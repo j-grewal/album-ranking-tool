@@ -86,7 +86,7 @@ class BinaryInsertionSort(RankingAlgorithm):
 
 class RankingSession:
 
-    def __init__(self, algorithm):
+    def __init__(self, algorithm: RankingAlgorithm):
         self.algorithm = algorithm
         self._skipped_comparisons = []
         self._removed_albums = []

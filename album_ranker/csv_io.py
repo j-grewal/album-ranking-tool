@@ -6,7 +6,7 @@ import logging
 import random
 
 from csv import DictReader, DictWriter
-from album_ranker.album import Album
+from album import Album
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +50,18 @@ def list_of_dicts_to_albums(listofdicts):
     return list_of_albums
 
 
-def list_of_albums_to_csv(listofalbums):
-    pass
+def list_of_albums_to_csv(listofalbums: list[Album]):
+    first_album = listofalbums[0]
+    metadata = first_album.metadata
+    fields = ["title", "artist"]
+    for key in metadata:
+        fields.append(key)
 
+    with open("album_ranker/output/output.csv", "w", newline='') as csvfile:
+        writer = DictWriter(csvfile, fieldnames=fields)
+
+        for album in listofalbums:
+            row = album.metadata
+            row["title"] = album.title
+            row["artist"] = album.artist
+            writer.writerow(row)

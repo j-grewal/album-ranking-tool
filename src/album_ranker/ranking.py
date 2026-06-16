@@ -96,7 +96,7 @@ class RankingSession:
         return self.algorithm.get_next_comparison()
 
     def get_ranking(self):
-        return self.algorithm.current_ranking
+        return self.algorithm.get_ranking()
 
     def record_choice(self, winner, loser):
         self._comparison_history.append((winner, loser))

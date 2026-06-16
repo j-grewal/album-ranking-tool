@@ -33,6 +33,27 @@ def csv_to_list_of_dicts(filepath):
 
     return list_of_dicts
 
+def json_to_list_of_dicts(json_data):
+    list_of_dicts = []
+    for row in json_data:
+        row_dict = {}
+        row_dict["title"] = row["title"]
+        row_dict["artist"] = row["artist"]
+        metadata = {}
+        for key in row.keys():
+            if key == "title" or key == "artist":
+                continue
+            else:
+                metadata[key] = row[key]
+
+        row_dict["metadata"] = metadata
+
+        list_of_dicts.append(row_dict)
+    
+    logger.info(f"Read in {len(list_of_dicts)} rows from JSON data")
+
+    return list_of_dicts
+
 
 def list_of_dicts_to_albums(listofdicts):
     list_of_albums = []

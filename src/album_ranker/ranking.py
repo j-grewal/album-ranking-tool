@@ -123,10 +123,5 @@ class RankingSession:
     
     def undo_choice(self):
         self._comparison_history.pop()
-        # Would also need to set the state to the previous comparison too (which can be gotten from the pop)
+        # Would also need to set the state to the previous comparison too (which can be gotten from the pop, and reset the previous pointer variables too)
         # Would also need to reverse any ranking updates that were made as a result of the previous choice (this may be tricky)
-
-
-
-
-# Make sure that editing these lists of albums is handled copmletely by the class so that if an album is added to the current rankings, it can be removed from the unrakned albums in the same funciton call.

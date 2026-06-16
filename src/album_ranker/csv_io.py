@@ -16,6 +16,20 @@ class AlbumSource:
         self.list_of_albums = []
         self.list_of_fields = []
 
+    def list_of_albums_to_csv(self, ranked_albums):
+        with open("src/album_ranker/output/output.csv", "w", newline='') as csvfile:
+            writer = DictWriter(csvfile, fieldnames=self.list_of_fields)
+            writer.writeheader()
+
+            for album in ranked_albums:
+                row = {}
+                for key in album.metadata:
+                    row[key] = album.metadata[key]
+
+                row["title"] = album.title
+                row["artist"] = album.artist
+                writer.writerow(row)
+
 class CSVAlbumSource(AlbumSource):
     def __init__(self, filepath:str):
         super().__init__()
@@ -64,21 +78,6 @@ class CSVAlbumSource(AlbumSource):
         random.shuffle(self.list_of_albums) # Why not?
 
         return self.list_of_albums
-    
-    def list_of_albums_to_csv(self, ranked_albums):
-
-        with open("src/album_ranker/output/output.csv", "w", newline='') as csvfile:
-            writer = DictWriter(csvfile, fieldnames=self.list_of_fields)
-            writer.writeheader()
-
-            for album in ranked_albums:
-                row = {}
-                for key in album.metadata:
-                    row[key] = album.metadata[key]
-
-                row["title"] = album.title
-                row["artist"] = album.artist
-                writer.writerow(row)
 
 
 """

@@ -59,6 +59,7 @@ def list_of_albums_to_csv(listofalbums: list[Album]):
 
     with open("src/album_ranker/output/output.csv", "w", newline='') as csvfile:
         writer = DictWriter(csvfile, fieldnames=fields)
+        writer.writeheader()
 
         for album in listofalbums:
             row = {}

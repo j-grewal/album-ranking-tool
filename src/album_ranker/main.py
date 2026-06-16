@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 def main():
     filepath = "src/album_ranker/data/example_small.csv"
-    csv_reader = csv_io.CSVAlbumSource(filepath)
-    list_of_albums = csv_reader.file_to_list_of_albums()
+    csv_handler = csv_io.CSVAlbumSource(filepath)
+    list_of_albums = csv_handler.file_to_list_of_albums()
 
     if len(list_of_albums) == 0:
         print("CSV file did not contain any rows")
@@ -36,7 +36,7 @@ def main():
             session.record_choice(album_b, album_a)
 
     print("Ranking complete :)")
-    csv_io.list_of_albums_to_csv(session.get_ranking())
+    csv_handler.list_of_albums_to_csv(session.get_ranking())
 
 if __name__ == "__main__":
     main()

@@ -14,14 +14,22 @@ logger = logging.getLogger(__name__)
 class AlbumSource:
     def __init__(self):
         self.list_of_albums = []
+        self.list_of_fields = []
 
 class CSVAlbumSource(AlbumSource):
     def __init__(self, filepath:str):
         super().__init__()
         self.filepath = filepath
 
+    def _read_list_of_fields(self):
+        with open(self.filepath, newline='') as csvfile:
+            reader = DictReader(csvfile)
+            self.list_of_fields = reader.fieldnames
+            logger.info(f"Read in {len(self.list_of_fields)} fields from CSV file")
+            return self.list_of_fields
+
     def _validate_input(self, reader:DictReader):
-        header = reader.fieldnames
+        header = self._read_list_of_fields()
         if "title" in header and "artist" in header:
             return True
         else:
@@ -57,8 +65,23 @@ class CSVAlbumSource(AlbumSource):
 
         return self.list_of_albums
     
+    def list_of_albums_to_csv(self, ranked_albums):
+
+        with open("src/album_ranker/output/output.csv", "w", newline='') as csvfile:
+            writer = DictWriter(csvfile, fieldnames=self.list_of_fields)
+            writer.writeheader()
+
+            for album in ranked_albums:
+                row = {}
+                for key in album.metadata:
+                    row[key] = album.metadata[key]
+
+                row["title"] = album.title
+                row["artist"] = album.artist
+                writer.writerow(row)
 
 
+"""
 def text_to_list_of_dicts(text):
     list_of_dicts = []
     reader = DictReader(text.splitlines())
@@ -81,24 +104,38 @@ def text_to_list_of_dicts(text):
     logger.info(f"Read in {len(list_of_dicts)} rows from CSV text")
 
     return list_of_dicts
+"""
 
+class TextAlbumSource(AlbumSource):
+    def __init__(self, text:str):
+        super().__init__()
+        self.text = text
 
-def list_of_albums_to_csv(listofalbums: list[Album]):
-    first_album = listofalbums[0]
-    metadata = first_album.metadata
-    fields = ["title", "artist"]
-    for key in metadata:
-        fields.append(key)
+    def text_to_list_of_albums(self):
+        reader = DictReader(self.text.splitlines())
 
-    with open("src/album_ranker/output/output.csv", "w", newline='') as csvfile:
-        writer = DictWriter(csvfile, fieldnames=fields)
-        writer.writeheader()
+        if not self._validate_input(reader):
+            logger.warning("User submitted csv file without 'title' and 'artist' fields")
+            return
 
-        for album in listofalbums:
-            row = {}
-            for key in album.metadata:
-                row[key] = album.metadata[key]
+        for row in reader:
+            metadata = {}
+            for key in row.keys():
+                if key == "title" or key == "artist":
+                    continue
+                else:
+                    metadata[key] = row[key]
 
-            row["title"] = album.title
-            row["artist"] = album.artist
-            writer.writerow(row)
+            self.list_of_albums.append(
+                Album(
+                    row["title"],
+                    row["artist"],
+                    metadata,
+                )
+            )
+        
+        logger.info(f"Read in {len(self.list_of_albums)} rows from CSV text")
+
+        random.shuffle(self.list_of_albums) # Why not?
+
+        return self.list_of_albums

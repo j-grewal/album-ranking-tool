@@ -30,6 +30,7 @@ class AlbumSource:
                 row["artist"] = album.artist
                 writer.writerow(row)
 
+
 class CSVAlbumSource(AlbumSource):
     def __init__(self, filepath:str):
         super().__init__()
@@ -79,31 +80,6 @@ class CSVAlbumSource(AlbumSource):
 
         return self.list_of_albums
 
-
-"""
-def text_to_list_of_dicts(text):
-    list_of_dicts = []
-    reader = DictReader(text.splitlines())
-    for row in reader:
-        # validate that the row has title and artist keys
-        row_dict = {}
-        row_dict["title"] = row["title"]
-        row_dict["artist"] = row["artist"]
-        metadata = {}
-        for key in row.keys():
-            if key == "title" or key == "artist":
-                continue
-            else:
-                metadata[key] = row[key]
-
-        row_dict["metadata"] = metadata
-
-        list_of_dicts.append(row_dict)
-    
-    logger.info(f"Read in {len(list_of_dicts)} rows from CSV text")
-
-    return list_of_dicts
-"""
 
 class TextAlbumSource(AlbumSource):
     def __init__(self, text:str):

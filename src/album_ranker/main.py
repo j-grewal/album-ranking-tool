@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 
 def main():
     filepath = "src/album_ranker/data/example_small.csv"
-    list_of_albums = csv_io.list_of_dicts_to_albums(csv_io.csv_to_list_of_dicts(filepath))
+    csv_reader = csv_io.CSVAlbumSource(filepath)
+    list_of_albums = csv_reader.file_to_list_of_albums()
 
     if len(list_of_albums) == 0:
         print("CSV file did not contain any rows")

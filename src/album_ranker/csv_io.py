@@ -10,32 +10,60 @@ from album import Album
 
 logger = logging.getLogger(__name__)
 
-def csv_to_list_of_dicts(filepath):
-    list_of_dicts = []
-    with open(filepath, newline='') as csvfile:
-        reader = DictReader(csvfile)
-        for row in reader:
-            row_dict = {}
-            row_dict["title"] = row["title"]
-            row_dict["artist"] = row["artist"]
-            metadata = {}
-            for key in row.keys():
-                if key == "title" or key == "artist":
-                    continue
-                else:
-                    metadata[key] = row[key]
 
-            row_dict["metadata"] = metadata
+class AlbumSource:
+    def __init__(self):
+        self.list_of_albums = []
 
-            list_of_dicts.append(row_dict)
+class CSVAlbumSource(AlbumSource):
+    def __init__(self, filepath:str):
+        super().__init__()
+        self.filepath = filepath
+
+    def _validate_input(self, reader:DictReader):
+        header = reader.fieldnames
+        if "title" in header and "artist" in header:
+            return True
+        else:
+            return False
     
-    logger.info(f"Read in {len(list_of_dicts)} rows from CSV file")
+    def file_to_list_of_albums(self):
+        with open(self.filepath, newline='') as csvfile:
+            reader = DictReader(csvfile)
 
-    return list_of_dicts
+            if not self._validate_input(reader):
+                logger.warning("User submitted csv file without 'title' and 'artist' fields")
+                return
 
-def json_to_list_of_dicts(json_data):
+            for row in reader:
+                metadata = {}
+                for key in row.keys():
+                    if key == "title" or key == "artist":
+                        continue
+                    else:
+                        metadata[key] = row[key]
+
+                self.list_of_albums.append(
+                    Album(
+                        row["title"],
+                        row["artist"],
+                        metadata,
+                    )
+                )
+        
+        logger.info(f"Read in {len(self.list_of_albums)} rows from CSV file")
+
+        random.shuffle(self.list_of_albums) # Why not?
+
+        return self.list_of_albums
+    
+
+
+def text_to_list_of_dicts(text):
     list_of_dicts = []
-    for row in json_data:
+    reader = DictReader(text.splitlines())
+    for row in reader:
+        # validate that the row has title and artist keys
         row_dict = {}
         row_dict["title"] = row["title"]
         row_dict["artist"] = row["artist"]
@@ -50,25 +78,9 @@ def json_to_list_of_dicts(json_data):
 
         list_of_dicts.append(row_dict)
     
-    logger.info(f"Read in {len(list_of_dicts)} rows from JSON data")
+    logger.info(f"Read in {len(list_of_dicts)} rows from CSV text")
 
     return list_of_dicts
-
-
-def list_of_dicts_to_albums(listofdicts):
-    list_of_albums = []
-    logger.info(f"Converting list of dicts to a list of album objects")
-    for d in listofdicts:
-        list_of_albums.append(
-            Album(
-                d["title"],
-                d["artist"],
-                d["metadata"],
-            )
-        )
-
-    random.shuffle(list_of_albums) # Why not?
-    return list_of_albums
 
 
 def list_of_albums_to_csv(listofalbums: list[Album]):

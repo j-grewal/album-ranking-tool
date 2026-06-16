@@ -2,7 +2,11 @@
 UI module in NiceGUI
 """
 
+import logging
+
 from nicegui import ui, events
+
+logger = logging.getLogger(__name__)
 
 @ui.page("/")
 def page_homepage():
@@ -18,19 +22,22 @@ def page_csv_upload():
         on_upload=handle_upload,
         on_rejected=ui.notify("Please upload a single CSV file"),
         auto_upload=True,
-    )
+    ).props("accept=.csv")
 
 @ui.page("/rank_session")
 def page_rank_session():
     ui.label("Ranking goes here")
 
-def handle_upload(event: events.UploadEventArguments):
-    print(f"File uploaded: {event.file.name}, type: {event.file.content_type}")
-    if event.file.content_type == "text/csv":
-        file_content_json = event.file.json()
+async def handle_upload(event: events.UploadEventArguments):
+    logger.info(f"File uploaded: {event.file.name}, type: {event.file.content_type}")
+
+    filename = event.file.name.lower()
+
+    if not filename.endswith(".csv"):
+        ui.notify("Please upload a csv file", color="red", type="negative")
+    else:
+        file_content_json = event.file.text()
         with ui.link(target="/rank_session"):
             ui.button("Continue")
-    else:
-        ui.notify("Please upload a csv file", color="red")
 
 ui.run()
